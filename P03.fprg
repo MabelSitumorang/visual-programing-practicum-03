@@ -1,0 +1,93 @@
+<?xml version="1.0"?>
+<flowgorithm fileversion="3.0">
+    <attributes>
+        <attribute name="name" value=""/>
+        <attribute name="authors" value="LENOVO"/>
+        <attribute name="about" value=""/>
+        <attribute name="saved" value="2023-11-01 03:56:57 PM"/>
+        <attribute name="created" value="TEVOT1ZPO0xBUFRPUC04N1E1T0tNSjsyMDIzLTEwLTMxOzA5OjI3OjIyIFBNOzI4MDQ="/>
+        <attribute name="edited" value="TEVOT1ZPO0xBUFRPUC04N1E1T0tNSjsyMDIzLTExLTAxOzA4OjI2OjExIEFNOzE7RkFLVUxUQVNfVEVLTklLX1ZEMTtERVNLVE9QLTUyTEszQzQ7MjAyMC0wMi0wNTswMzozNToxOCBBTTtCdWJibGVTb3J0X0ZPU1NBTEdPLmZwcmc7ODkxNg=="/>
+        <attribute name="edited" value="TEVOT1ZPO0xBUFRPUC04N1E1T0tNSjsyMDIzLTExLTAxOzAzOjIyOjM4IFBNOzE7TEVOT1ZPO0xBUFRPUC04N1E1T0tNSjsyMDIzLTA5LTI4OzA3OjU2OjQyIFBNO2V4IHR1dG9yIDAyLmZwcmc7NzI3OA=="/>
+        <attribute name="edited" value="TEVOT1ZPO0xBUFRPUC04N1E1T0tNSjsyMDIzLTExLTAxOzAzOjU2OjU3IFBNOzg7MjkyMQ=="/>
+    </attributes>
+    <function name="Main" type="None" variable="">
+        <parameters/>
+        <body>
+            <declare name="tugas, keterangan" type="String" array="True" size="10"/>
+            <declare name="NIM" type="String" array="True" size="10"/>
+            <declare name="matkul" type="String" array="True" size="10"/>
+            <declare name="dosen" type="String" array="True" size="10"/>
+            <declare name="waktu" type="String" array="True" size="10"/>
+            <declare name="identitas" type="String" array="True" size="10"/>
+            <declare name="kesulitan" type="Real" array="True" size="10"/>
+            <declare name="deadline" type="Real" array="True" size="10"/>
+            <declare name="status" type="String" array="True" size="10"/>
+            <declare name="prioritas, prioritaslagi" type="Real" array="True" size="10"/>
+            <declare name="i, j" type="Integer" array="False" size=""/>
+            <declare name="jumlah" type="Integer" array="False" size=""/>
+            <declare name="ordertask" type="Integer" array="True" size="10"/>
+            <for variable="i" start="0" end="9" direction="inc" step="1">
+                <input variable="tugas[i]"/>
+                <if expression="tugas[i]!=&quot;---&quot;">
+                    <then>
+                        <input variable="NIM[i]"/>
+                        <input variable="matkul[i]"/>
+                        <input variable="dosen[i]"/>
+                        <input variable="waktu[i]"/>
+                        <input variable="identitas[i]"/>
+                        <input variable="kesulitan[i]"/>
+                        <input variable="deadline[i]"/>
+                        <input variable="status[i]"/>
+                        <assign variable="prioritas[i]" expression="kesulitan[i]*(1/deadline[i])"/>
+                        <if expression="prioritas[i]&gt;3">
+                            <then>
+                                <assign variable="keterangan[i]" expression="&quot;Penting! Anda harus mengerjakan tugas ini segera.&quot;"/>
+                            </then>
+                            <else>
+                                <if expression="prioritas[i]&lt;=3&amp;&amp;prioritas[i]&gt;=1.5">
+                                    <then>
+                                        <assign variable="keterangan[i]" expression="&quot;Tugas ini memiliki prioritas menengah.&quot;"/>
+                                    </then>
+                                    <else>
+                                        <if expression="prioritas[i]&lt;1.5">
+                                            <then>
+                                                <assign variable="keterangan[i]" expression="&quot;Tugas ini relatif ringan, namun jangan tunda terlalu lama.&quot;"/>
+                                            </then>
+                                            <else/>
+                                        </if>
+                                    </else>
+                                </if>
+                            </else>
+                        </if>
+                        <assign variable="prioritaslagi[i]" expression="prioritas[i]"/>
+                        <assign variable="jumlah" expression="i"/>
+                        <assign variable="ordertask[i]" expression="i"/>
+                    </then>
+                    <else>
+                        <assign variable="i" expression="10"/>
+                    </else>
+                </if>
+            </for>
+            <for variable="i" start="0" end="jumlah-2" direction="inc" step="1">
+                <for variable="j" start="0" end="jumlah-i-2" direction="inc" step="1">
+                    <if expression="prioritaslagi[j] &gt; prioritaslagi[j+1]">
+                        <then>
+                            <declare name="temp" type="Integer" array="False" size=""/>
+                            <assign variable="temp" expression="prioritaslagi[j]"/>
+                            <assign variable="prioritaslagi[j]" expression="prioritaslagi[j+1]"/>
+                            <assign variable="prioritaslagi[j+1]" expression="temp"/>
+                            <assign variable="temp" expression="ordertask[i]"/>
+                            <assign variable="ordertask[j]" expression="ordertask[j+1]"/>
+                            <assign variable="ordertask[j+1]" expression="temp"/>
+                        </then>
+                        <else/>
+                    </if>
+                </for>
+            </for>
+            <for variable="i" start="jumlah" end="0" direction="dec" step="1">
+                <output expression="&quot;Prioritas: &quot; &amp;ToFixed(prioritas[ordertask[i]],2)" newline="True"/>
+                <output expression="tugas[i] &amp;&quot;|&quot; &amp; NIM[i] &amp;&quot;|&quot; &amp;matkul[i] &amp;&quot;|&quot; &amp;dosen[i] &amp;&quot;|&quot; &amp;waktu[i] &amp;&quot;|&quot; &amp;identitas[i] &amp;&quot;|&quot; &amp;status[i] &amp;&quot;|&quot; &amp;keterangan[i]" newline="True"/>
+            </for>
+        </body>
+    </function>
+</flowgorithm>
